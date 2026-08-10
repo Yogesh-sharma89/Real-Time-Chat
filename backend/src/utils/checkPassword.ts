@@ -9,7 +9,7 @@ export const CheckPassword = async(password:string,hashPassword:string)=>{
     
     try{
         const isPasswordMatch = await bcrypt.compare(password,hashPassword);
-        
+
         if(!isPasswordMatch){
             throw new AppError("Invalid email or password",401);
         }
@@ -17,5 +17,6 @@ export const CheckPassword = async(password:string,hashPassword:string)=>{
 
     }catch(err:any){
        console.log("Error in check password",err.message);
+       throw err;
     }
 }

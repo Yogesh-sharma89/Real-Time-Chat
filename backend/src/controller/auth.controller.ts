@@ -70,7 +70,7 @@ export const Login = asyncHandler(async (req, res) => {
         throw new AppError("Invalid Email or password",401);
     }
 
-    CheckPassword(password,existingUser.password); //it check the password and throw if any error
+    await CheckPassword(password,existingUser.password); //it check the password and throw if any error
 
     //Control comes here means email and password are correct
 

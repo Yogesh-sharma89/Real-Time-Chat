@@ -20,4 +20,6 @@ export const ProtectRoute = asyncHandler(async(req,res,next)=>{
 
     req.userId = decodedData;
 
+    next();
+
 })

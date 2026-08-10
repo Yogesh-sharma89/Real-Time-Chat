@@ -24,8 +24,8 @@ const userSchema = new mongoose.Schema<RegisterSchema>({
         trim:true,
         unique:true,
         index:true,
-        validate:()=>{
-            validator:(value:string)=> validator.isEmail(value)
+        validate:{
+            validator:(value:string)=> validator.isEmail(value),
             message:"Please Provide a valid email address"
         }
     },
@@ -52,7 +52,8 @@ const userSchema = new mongoose.Schema<RegisterSchema>({
         enum:{
             values:['local','social'],
             message:"Invalid auth mode"
-        }
+        },
+        default:"local"
     }
 
 }, {
