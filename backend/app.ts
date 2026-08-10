@@ -2,10 +2,10 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-import { morganMiddleware } from "./src/middleware/morgan.middleware";
-import GlobalErrorHandler from "./src/middleware/errorHandler";
-import ConnectToDB from "./src/config/db";
-import authRouter from "./src/routes/auth.route";
+import { morganMiddleware } from "./src/middleware/morgan.middleware.js";
+import GlobalErrorHandler from "./src/middleware/errorHandler.js";
+import ConnectToDB from "./src/config/db.js";
+import authRouter from "./src/routes/auth.route.js";
 
 dotenv.config();
 
@@ -23,7 +23,7 @@ app.use(morganMiddleware);
 
 
 //app routes 
-app.use("/api/auth",authRouter);
+app.use("/api/auth", authRouter);
 
 
 //gloabl error handler
@@ -44,8 +44,8 @@ const InitializeConnection = async () => {
             console.log(`Server is listening at port ${port}`);
         })
 
-    } catch (err:any) {
-       console.log("Error in main server file : ",err.message)
+    } catch (err: any) {
+        console.log("Error in main server file : ", err.message)
     }
 }
 
