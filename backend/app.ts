@@ -6,6 +6,7 @@ import { morganMiddleware } from "./src/middleware/morgan.middleware.js";
 import GlobalErrorHandler from "./src/middleware/errorHandler.js";
 import ConnectToDB from "./src/config/db.js";
 import authRouter from "./src/routes/auth.route.js";
+import userRouter from "./src/routes/user.route.js";
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ app.use(morganMiddleware);
 
 //app routes 
 app.use("/api/auth", authRouter);
+app.use("/api/user",userRouter);
 
 
 //gloabl error handler

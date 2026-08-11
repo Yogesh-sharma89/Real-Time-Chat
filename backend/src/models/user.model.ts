@@ -41,7 +41,7 @@ const userSchema = new mongoose.Schema<RegisterSchema>({
         trim:true,
         default:""
     },
-    profilePictureId:{type:String},
+    profilePictureId:{type:String,default:null},
 
     isDeleted:{
         type:Boolean,
