@@ -421,7 +421,7 @@ export const welcomeEmail = ({
 <!-- LOGO -->
 
 <div class="logo">
-  YS
+  ${appName.slice(0,2).toUpperCase()}
 </div>
 
 
