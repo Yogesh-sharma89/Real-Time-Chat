@@ -1,7 +1,9 @@
 import asyncHandler from "../middleware/asyncHandler";
 import UserModel from "../models/user.model";
+import { welcomeEmail } from "../templates/email/WelcomeEmail";
 import AppError from "../utils/appError";
 import { CheckPassword } from "../utils/checkPassword";
+import sendEmail from "../utils/emailHandler";
 import { GenerateToken } from "../utils/jwtToken";
 import { LoginSchema, SignupSchema } from "../validations/auth";
 
@@ -37,6 +39,7 @@ export const Signup = asyncHandler(async (req, res) => {
 
     const token = GenerateToken(payload);
 
+
     res.cookie("token", token, {
         httpOnly: true,
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
@@ -49,6 +52,26 @@ export const Signup = asyncHandler(async (req, res) => {
         success: true,
         message: "User Registered Successfully",
         user: newUser
+    })
+
+    setImmediate(async()=>{
+       try{
+
+        await sendEmail({
+            to:newUser.email,
+            subject:"Welcome to Chit-Chat",
+            html:welcomeEmail({
+                name:`${newUser.firstname} ${newUser.lastname}`,
+                appName:"Chit-Chat",
+                dashboardLink:`${process.env.CLIENT_URL}/dashboard`
+            })
+        })
+        
+
+       }catch(err:any){
+         console.error("❌ Background email failed")
+
+       }
     })
 
 })
