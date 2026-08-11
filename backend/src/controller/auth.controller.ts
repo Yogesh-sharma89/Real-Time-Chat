@@ -132,6 +132,25 @@ export const Logout = asyncHandler(async (_req, res) => {
 
 })
 
+export const GetCurrentUser = asyncHandler(async(req,res)=>{
+
+    const userId = req.userId;
+
+    //get the user ;
+    const user = await UserModel.findById(userId);
+
+    if(!user){
+        throw new AppError("User not found",404);
+    }
+
+    res.status(200).json({
+        success:true,
+        message:"Current user got successfully",
+        user
+    })
+
+})
+
 export const FrogotPassword = asyncHandler(async (req, res) => {
 
 })
@@ -139,3 +158,4 @@ export const FrogotPassword = asyncHandler(async (req, res) => {
 export const ResetPassword = asyncHandler(async (req, res) => {
 
 })
+
