@@ -28,13 +28,18 @@ app.use("/api/auth", authRouter);
 app.use("/api/user",userRouter);
 
 
-//gloabl error handler
-app.use(GlobalErrorHandler);
-
-
 app.get("/", (req, res) => {
     res.json({ message: "Server is up and running properly" })
 })
+
+app.get("/test", (req, res) => {
+    res.json({ message: "testing rate limit and security" })
+})
+
+
+//gloabl error handler
+app.use(GlobalErrorHandler);
+
 
 
 const InitializeConnection = async () => {

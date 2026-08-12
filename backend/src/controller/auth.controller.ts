@@ -8,6 +8,7 @@ import { GenerateToken } from "../utils/jwtToken";
 import { LoginSchema, SignupSchema } from "../validations/auth";
 
 
+
 export const Signup = asyncHandler(async (req, res) => {
 
     const validationData = SignupSchema.safeParse(req.body);
