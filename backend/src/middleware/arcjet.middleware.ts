@@ -17,7 +17,7 @@ const ArcjetMiddleware = asyncHandler(async(req,res,next)=>{
           throw new AppError("Bot access denied",403);
         }
         else if((await decision).reason.isPromptInjection()){
-            throw new AppError("Prompt Injection deneid",403);
+            throw new AppError("Prompt Injection denied",403);
         }else{
             throw new AppError("Access denied by security policy",403);
         }
@@ -25,7 +25,7 @@ const ArcjetMiddleware = asyncHandler(async(req,res,next)=>{
 
     //check for spoofed bots 
     if((await decision).results.some(isSpoofedBot)){
-        throw new AppError("Maliciois bot detected",403);
+        throw new AppError("Malicious bot detected",403);
     }
 
     next();
