@@ -3,6 +3,7 @@ import asyncHandler from "../middleware/asyncHandler";
 import MessageModel from "../models/message.model";
 import UserModel from "../models/user.model";
 import AppError from "../utils/appError";
+import { deleteFromCloudinary } from "../utils/deleteFromCloudinary";
 import UploadToCloudinary from "../utils/UploadToCloudinary";
 
 export const GetAllContacts = asyncHandler(async (req, res) => {
@@ -35,18 +36,18 @@ export const GetChatPartners = asyncHandler(async (req, res) => {
     ]
   })
 
-  const chatPartnerIds = [...new Set(messages.map((msg) => msg.sender.toString() === currentUserId ?     msg.receiver.toString() : msg.sender.toString()))];
+  const chatPartnerIds = [...new Set(messages.map((msg) => msg.sender.toString() === currentUserId ? msg.receiver.toString() : msg.sender.toString()))];
 
-  const chatPartners = await UserModel.find({_id:{$in:chatPartnerIds}})
+  const chatPartners = await UserModel.find({ _id: { $in: chatPartnerIds } })
 
   res.status(200).json({
-    success:true,
-    message:"Got chat-partners successfully",
-    users:chatPartners
+    success: true,
+    message: "Got chat-partners successfully",
+    users: chatPartners
   })
 
 
-  
+
 })
 
 
@@ -58,6 +59,13 @@ export const GetMessagesByUserId = asyncHandler(async (req, res) => {
   if (Array.isArray(secondUserId) || secondUserId === undefined) {
     throw new AppError("Invalid request", 400);
   }
+
+  const otherUserExists = await UserModel.exists({ _id: secondUserId });
+
+  if (!otherUserExists) {
+    throw new AppError("No message found. Invalid request", 400)
+  }
+
   //this controller is for get the all message/chats between current and specific user 
   const currentUserId = req.userId;
 
@@ -78,9 +86,15 @@ export const GetMessagesByUserId = asyncHandler(async (req, res) => {
 
 export const SendMessage = asyncHandler(async (req, res) => {
 
-  const { userId:otherUserId } = req.params;
+  const { userId: otherUserId } = req.params;
 
   if (Array.isArray(otherUserId) || otherUserId === undefined) {
+    throw new AppError("Invalid request", 400);
+  }
+
+  const otherUserExists = await UserModel.exists({ _id: otherUserId });
+
+  if (!otherUserExists) {
     throw new AppError("Invalid request", 400);
   }
 
@@ -89,6 +103,12 @@ export const SendMessage = asyncHandler(async (req, res) => {
   const { content } = req.body;
 
   const file = req.file?.path;
+
+  const messageContent = typeof content === "string" ? content.trim() : "";
+
+  if (!messageContent && !file) {
+    throw new AppError("Message content or media is required", 400);
+  }
 
   let media: MediaSchema[] = [];
   if (file) {
@@ -106,19 +126,27 @@ export const SendMessage = asyncHandler(async (req, res) => {
 
   //create the message 
 
-  const newMessage = await MessageModel.create({
-    sender: currentUserId!,
-    receiver: otherUserId!,
-    content,
-    media
-  })
+  try {
 
-  //before sending reponse we have to send message with the help of socket.io
+    const newMessage = await MessageModel.create({
+      sender: currentUserId!,
+      receiver: otherUserId!,
+      content: messageContent,
+      media
+    })
 
-  res.status(201).json({
-    success: true,
-    message: "Message created successfully",
-    newMessage
-  })
+    //before sending reponse we have to send message with the help of socket.io
+
+    res.status(201).json({
+      success: true,
+      message: "Message created successfully",
+      newMessage
+    })
+
+  } catch (err) {
+    
+    await deleteFromCloudinary(media[0]?.publicId!);
+    throw err;
+  }
 
 })

@@ -4,7 +4,7 @@ export interface MessageSchema{
     sender:Types.ObjectId,
     receiver:Types.ObjectId,
     content:string,
-    media:[MediaSchema]
+    media:MediaSchema[]
 }
 
 
