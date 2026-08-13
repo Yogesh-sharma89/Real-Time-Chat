@@ -15,6 +15,8 @@ const aj = arcjet({
                 "CATEGORY:MONITOR",
                 "CATEGORY:PREVIEW",
                 "CATEGORY:VERCEL",
+                "CATEGORY:PROGRAMMATIC",
+                "CATEGORY:TOOL"
             ]
         }),
 

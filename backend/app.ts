@@ -7,12 +7,15 @@ import GlobalErrorHandler from "./src/middleware/errorHandler.js";
 import ConnectToDB from "./src/config/db.js";
 import authRouter from "./src/routes/auth.route.js";
 import userRouter from "./src/routes/user.route.js";
+import messageRouter from "./src/routes/message.route.js";
 
 dotenv.config();
 
 const app = express();
 
 const port = process.env.PORT || 3000;
+
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -26,13 +29,18 @@ app.use(morganMiddleware);
 //app routes 
 app.use("/api/auth", authRouter);
 app.use("/api/user",userRouter);
+app.use("/api/message",messageRouter)
 
 
 app.get("/", (req, res) => {
     res.json({ message: "Server is up and running properly" })
 })
 
+console.log("port",port);
+console.log("test route is registered")
+
 app.get("/test", (req, res) => {
+    console.log("test route hit")
     res.json({ message: "testing rate limit and security" })
 })
 
