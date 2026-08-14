@@ -1,1 +1,44 @@
 @import "tailwindcss";
+@plugin "daisyui";
+
+
+/* Sonner progress bar */
+
+[data-sonner-toast]::after {
+  content: "";
+  position: absolute;
+
+  left: 14px;
+  right: 14px;
+  bottom: 7px;
+
+  height: 2px;
+
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.12);
+}
+
+[data-sonner-toast][data-type="success"]::after {
+  background: #34d399;
+}
+
+[data-sonner-toast][data-type="error"]::after {
+  background: #f87171;
+}
+
+[data-sonner-toast][data-type="warning"]::after {
+  background: #fbbf24;
+}
+
+[data-sonner-toast][data-type="info"]::after {
+  background: #22d3ee;
+}
+
+
+@media (max-width: 640px) {
+  [data-sonner-toast] {
+    width: calc(100vw - 24px) !important;
+    max-width: calc(100vw - 24px) !important;
+  }
+}

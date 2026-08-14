@@ -1,15 +1,11 @@
-import React from 'react'
+import { AppProvider } from "./Providers/AppProvider";
 
-interface Props {
-  
-}
-
- const App = (props: Props) => {
+const App = () => {
   return (
-    <div className='bg-black w-full h-screen text-white text-2xl'>
-      Hello I am just react 
-    </div>
-  )
-}
+    <>
+      <AppProvider />
+    </>
+  );
+};
 
 export default App;
