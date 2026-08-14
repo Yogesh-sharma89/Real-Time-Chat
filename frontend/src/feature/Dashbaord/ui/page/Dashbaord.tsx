@@ -1,10 +1,10 @@
 
-const Dashbaord = () => {
+const Dashboard = () => {
   return (
     <div>
-      THis is dashbaord page
+      THis is Dashboard page
     </div>
   )
 }
 
-export default Dashbaord
+export default Dashboard

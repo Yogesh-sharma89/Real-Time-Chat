@@ -8,8 +8,11 @@ import {
   Zap,
   CircleCheck,
 } from "lucide-react";
+import { useNavigate } from "react-router";
 
 const LoginPage = () => {
+
+  const navigate = useNavigate();
   
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#0b1220] text-white">
@@ -163,7 +166,7 @@ const LoginPage = () => {
                   duration: 0.6,
                   delay: 0.15,
                 }}
-                className="w-full max-w-[400px]"
+                className="w-full max-w-100"
               >
 
                 {/* Logo */}
@@ -437,7 +440,9 @@ const LoginPage = () => {
                     "
                   >
                     Don't have an account?{" "}
-                    <span className="font-semibold">
+                    <span className="font-semibold"
+                    onClick={()=>navigate("/signup")}
+                    >
                       Sign up
                     </span>
                   </button>
@@ -524,7 +529,7 @@ const LoginPage = () => {
                 >
 
                   <img
-                    src="/images/login-illustration.png"
+                    src="/login-illustration.png"
                     alt="People communicating"
                     className="
                       h-full
