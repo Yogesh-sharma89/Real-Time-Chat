@@ -70,9 +70,9 @@ const useAuthForm = <T extends FieldValues>({
   } = form;
 
   // Pre-wires the submit callback so the component layer just calls `submit` directly
-  const submit: UseAuthFormReturn<T>["submit"] = (
-    e?: React.BaseSyntheticEvent,
-  ) => handleSubmit(onSubmit)(e) as Promise<void>;
+  const submit: UseAuthFormReturn<T>["submit"] = async(e)=>{
+     await handleSubmit(onSubmit)(e);
+  }
 
   return {
     register,

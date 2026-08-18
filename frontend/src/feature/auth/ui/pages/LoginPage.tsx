@@ -7,20 +7,25 @@ import {
   ShieldCheck,
   Zap,
   CircleCheck,
+  Loader,
+  EyeOff,
+  Eye,
 } from "lucide-react";
-import { useNavigate } from "react-router";
+import useLogin from "../../hooks/useLogin";
+import ErrorMessage from "../components/ErrorMessage";
+import { useState } from "react";
 
 const LoginPage = () => {
 
-  const navigate = useNavigate();
-  
+  const [showPassword,setShowPassword] = useState(false);
+
+  const { register, isLoading, errors, navigate, submit } = useLogin();
+
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#0b1220] text-white">
-
       {/* ================= BACKGROUND ================= */}
 
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-
         {/* Grid */}
         <div
           className="absolute inset-0 opacity-[0.16]"
@@ -108,11 +113,9 @@ const LoginPage = () => {
         ))}
       </div>
 
-
       {/* ================= MAIN CONTAINER ================= */}
 
       <div className="relative z-10 flex min-h-screen items-center justify-center px-4 py-8 sm:px-6 lg:px-8">
-
         <motion.div
           initial={{
             opacity: 0,
@@ -140,9 +143,14 @@ const LoginPage = () => {
             backdrop-blur-2xl
           "
         >
-
-          <div className="grid min-h-162.5 lg:grid-cols-2">
-
+          <div
+            className="grid min-h-162.5 lg:grid-cols-2   lg:after:absolute
+            lg:after:inset-y-0
+            lg:after:left-1/2
+            lg:after:w-px
+            lg:after:-translate-x-1/2
+            lg:after:bg-[#263750]"
+          >
             {/* ================================================= */}
             {/* LEFT — LOGIN FORM */}
             {/* ================================================= */}
@@ -158,7 +166,6 @@ const LoginPage = () => {
                 lg:px-14
               "
             >
-
               <motion.div
                 initial={{ opacity: 0, x: -25 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -168,7 +175,6 @@ const LoginPage = () => {
                 }}
                 className="w-full max-w-100"
               >
-
                 {/* Logo */}
 
                 <motion.div
@@ -192,18 +198,13 @@ const LoginPage = () => {
                       text-cyan-400
                     "
                   >
-                    <MessageCircle
-                      size={48}
-                      strokeWidth={1.7}
-                    />
+                    <MessageCircle size={48} strokeWidth={1.7} />
                   </div>
                 </motion.div>
-
 
                 {/* Heading */}
 
                 <div className="mb-8 text-center">
-
                   <motion.h1
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -231,14 +232,11 @@ const LoginPage = () => {
                   >
                     Login to access your account
                   </motion.p>
-
                 </div>
-
 
                 {/* ================= FORM ================= */}
 
-                <form className="space-y-5">
-
+                <form className="space-y-5" onSubmit={submit}>
                   {/* Email */}
 
                   <motion.div
@@ -276,18 +274,20 @@ const LoginPage = () => {
                         focus-within:shadow-[0_0_20px_rgba(6,182,212,0.08)]
                       "
                     >
-                      <Mail
-                        size={18}
-                        className="text-[#71849D]"
-                      />
+                      <Mail size={18} className="text-[#71849D]" />
 
                       <input
                         id="email"
                         type="email"
+                        {...register("email", {
+                          required: "Email is required",
+                        })}
+                        disabled={isLoading}
                         placeholder="Enter your email"
                         className="
                           w-full
                           bg-transparent
+                          disabled:cursor-not-allowed
                           text-sm
                           text-[#F4F8FF]
                           outline-none
@@ -295,16 +295,27 @@ const LoginPage = () => {
                         "
                       />
                     </label>
+                    {errors.email && (
+                      <ErrorMessage message={errors.email.message} />
+                    )}
                   </motion.div>
-
 
                   {/* Password */}
 
-                  <motion.div
-                    initial={{ opacity: 0, x: -15 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.65 }}
+                 <motion.div
+                    initial={{
+                      opacity: 0,
+                      x: -15,
+                    }}
+                    animate={{
+                      opacity: 1,
+                      x: 0,
+                    }}
+                    transition={{
+                      delay: 0.69,
+                    }}
                   >
+
                     <label
                       htmlFor="password"
                       className="
@@ -318,34 +329,49 @@ const LoginPage = () => {
                       Password
                     </label>
 
-                    <label
-                      className="
+                    <div
+                      className={`
                         flex
                         h-11
                         items-center
                         gap-3
                         rounded-lg
                         border
-                        border-[#2A3A52]
                         bg-[#142033]/70
                         px-3
                         transition-all
                         duration-200
-                        focus-within:border-cyan-400/50
-                        focus-within:shadow-[0_0_20px_rgba(6,182,212,0.08)]
-                      "
+
+                        ${
+                          errors.password
+                            ? "border-red-400/60"
+                            : "border-[#2A3A52] focus-within:border-cyan-400/50"
+                        }
+                      `}
                     >
+
                       <Lock
                         size={18}
-                        className="text-[#71849D]"
+                        className="shrink-0 text-[#71849D]"
                       />
 
                       <input
                         id="password"
-                        type="password"
+                        disabled={isLoading}
+                        type={
+                          showPassword
+                            ? "text"
+                            : "password"
+                        }
+                        {
+                          ...register("password",{
+                            required:"Password is required"
+                          })
+                        }
                         placeholder="Enter your password"
                         className="
                           w-full
+                          disabled:cursor-not-allowed
                           bg-transparent
                           text-sm
                           text-[#F4F8FF]
@@ -353,9 +379,42 @@ const LoginPage = () => {
                           placeholder:text-[#64758D]
                         "
                       />
-                    </label>
-                  </motion.div>
 
+                      <button
+                        type="button"
+                        
+                        onClick={() =>
+                          setShowPassword(
+                            (prev) => !prev
+                          )
+                        }
+                        className="
+                          shrink-0
+                          text-[#71849D]
+                          cursor-pointerP
+                          transition-colors
+                          hover:text-cyan-400
+                        "
+                        aria-label={
+                          showPassword
+                            ? "Hide password"
+                            : "Show password"
+                        }
+                      >
+                        {showPassword ? (
+                          <EyeOff size={18} />
+                        ) : (
+                          <Eye size={18} />
+                        )}
+                      </button>
+
+                    </div>
+
+                    { errors.password && <ErrorMessage
+                      message={errors.password.message}
+                    />}
+
+                  </motion.div>
 
                   {/* Forgot password */}
 
@@ -368,6 +427,7 @@ const LoginPage = () => {
                     <button
                       type="button"
                       className="
+                      cursor-pointer
                         text-xs
                         font-medium
                         text-cyan-400
@@ -379,7 +439,6 @@ const LoginPage = () => {
                     </button>
                   </motion.div>
 
-
                   {/* Submit */}
 
                   <motion.button
@@ -388,14 +447,16 @@ const LoginPage = () => {
                     transition={{ delay: 0.8 }}
                     whileHover={{
                       scale: 1.015,
-                      boxShadow:
-                        "0 0 28px rgba(6,182,212,0.25)",
+                      boxShadow: "0 0 28px rgba(6,182,212,0.25)",
                     }}
                     whileTap={{
                       scale: 0.98,
                     }}
                     type="submit"
+                    disabled={isLoading}
                     className="
+                      cursor-pointer
+                       disabled:cursor-not-allowed
                       btn
                       h-11
                       min-h-11
@@ -409,11 +470,13 @@ const LoginPage = () => {
                       hover:bg-cyan-400
                     "
                   >
-                    Sign in
+                    {isLoading ? (
+                      <Loader className="size-5 animte-spin" />
+                    ) : (
+                      <span>Sing in</span>
+                    )}
                   </motion.button>
-
                 </form>
-
 
                 {/* Signup */}
 
@@ -425,8 +488,10 @@ const LoginPage = () => {
                 >
                   <button
                     type="button"
+                    onClick={() => navigate("/signup")}
                     className="
                       rounded-md
+                      cursor-pointer
                       bg-[#13283B]
                       px-4
                       py-2
@@ -440,31 +505,13 @@ const LoginPage = () => {
                     "
                   >
                     Don't have an account?{" "}
-                    <span className="font-semibold"
-                    onClick={()=>navigate("/signup")}
-                    >
-                      Sign up
-                    </span>
+                    <span className="font-semibold ">Sign up</span>
                   </button>
                 </motion.div>
-
               </motion.div>
-
             </section>
 
-
-
-            <div
-              className="
-                hidden
-                border-l
-                border-[#263750]
-                lg:block
-              "
-            />
-
             {/* RIGHT — ILLUSTRATION */}
-            
 
             <section
               className="
@@ -476,7 +523,6 @@ const LoginPage = () => {
                 lg:flex
               "
             >
-
               {/* Decorative glow */}
 
               <div
@@ -494,9 +540,7 @@ const LoginPage = () => {
                 "
               />
 
-
               <div className="relative z-10 flex flex-col items-center">
-
                 {/* Illustration */}
 
                 <motion.div
@@ -527,7 +571,6 @@ const LoginPage = () => {
                     w-107.5
                   "
                 >
-
                   <img
                     src="/login-illustration.png"
                     alt="People communicating"
@@ -538,9 +581,7 @@ const LoginPage = () => {
                       drop-shadow-[0_25px_35px_rgba(0,0,0,0.35)]
                     "
                   />
-
                 </motion.div>
-
 
                 {/* Heading */}
 
@@ -558,7 +599,6 @@ const LoginPage = () => {
                   Connect Anytime, Anywhere
                 </motion.h2>
 
-
                 {/* Feature badges */}
 
                 <motion.div
@@ -573,7 +613,6 @@ const LoginPage = () => {
                     gap-3
                   "
                 >
-
                   {[
                     {
                       icon: ShieldCheck,
@@ -587,15 +626,14 @@ const LoginPage = () => {
                       icon: CircleCheck,
                       label: "Reliable",
                     },
-                  ].map(
-                    ({ icon: Icon, label }) => (
-                      <motion.div
-                        key={label}
-                        whileHover={{
-                          y: -3,
-                          scale: 1.04,
-                        }}
-                        className="
+                  ].map(({ icon: Icon, label }) => (
+                    <motion.div
+                      key={label}
+                      whileHover={{
+                        y: -3,
+                        scale: 1.04,
+                      }}
+                      className="
                           flex
                           items-center
                           gap-1.5
@@ -608,26 +646,18 @@ const LoginPage = () => {
                           text-xs
                           text-cyan-300
                         "
-                      >
-                        <Icon size={12} />
+                    >
+                      <Icon size={12} />
 
-                        {label}
-                      </motion.div>
-                    )
-                  )}
-
+                      {label}
+                    </motion.div>
+                  ))}
                 </motion.div>
-
               </div>
-
             </section>
-
           </div>
-
         </motion.div>
-
       </div>
-
     </main>
   );
 };

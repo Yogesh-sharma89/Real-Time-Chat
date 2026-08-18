@@ -7,5 +7,11 @@ const GlobalStore = configureStore({
     }
 });
 
+export type RootState = ReturnType<
+  typeof GlobalStore.getState
+>;
+
+export type AppDispatch = typeof GlobalStore.dispatch;
+
 
 export default GlobalStore;
