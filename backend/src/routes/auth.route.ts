@@ -9,7 +9,7 @@ authRouter.use(ArcjetMiddleware); //middleware for secrity and rate-limiting
 
 authRouter.post("/signup",Signup)
 authRouter.post("/login",Login)
-authRouter.post("/logout",ProtectRoute,Logout)
+authRouter.post("/logout",Logout)
 
 //get the current authenticated user
 authRouter.get("/me",ProtectRoute,GetCurrentUser)

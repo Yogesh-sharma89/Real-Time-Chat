@@ -19,7 +19,13 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors({
+    origin:[process.env.CLIENT_URL!],
+    allowedHeaders:['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+    credentials:true,
+    methods:["GET","POST","PUT","PATCH","DELETE"],
+    maxAge:600 //10 minutes
+}));
 app.use(cookieParser());
 
 //morgan middleware 
